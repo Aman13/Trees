@@ -189,16 +189,18 @@ void deleteCase3(Node* value)	{
 	if((value->parent->isBlack ==1)&&(sibling == NULL))	{
 		deleteCase1(value->parent);
 	}
-	if((value->parent->isBlack ==1)&&(sibling->isBlack ==1)&&(sibling->left->isBlack ==1)&&(sibling->right->isBlack ==1))	{
-		sibling->isBlack = 0;
-		deleteCase1(value->parent);
+	if((sibling != NULL) && (Sibling->left != NULL) && (Sibling->right != NULL)){
+		if((value->parent->isBlack ==1)&&(sibling->isBlack ==1)&&(sibling->left->isBlack ==1)&&(sibling->right->isBlack ==1))	{
+			sibling->isBlack = 0;
+			deleteCase1(value->parent);
 	}
 	deleteCase4(value);
 }
 
 void deleteCase4(Node* value)	{
 	siblingFinder(value);
-
+	if((value->parent->isBlack == 0)&&(sibling->isBlack == 1)&&(sibling->left->isBlack)
+	}
 }
 
 
