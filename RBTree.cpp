@@ -5,7 +5,7 @@
 #include <string>
 #include <stdexcept>
 
-RBTree::RBTree() : root(NULL), grandpa(NULL), uncle(NULL), counter(0) {
+RBTree::RBTree() : root(NULL), grandpa(NULL), uncle(NULL), sibling(NULL), locator(NULL), child(NULL), counter(0) {
 	std::cout << "Rb tree constructor" << std::endl;
 
 }
@@ -64,6 +64,155 @@ bool RBTree::insert(int value)	{
 	return insertion;
 }
 
+bool RBTree::search(int value)	{
+	if(root == NULL)	{
+		return false;
+	}
+	Node* pos = root;
+	bool found = false;
+	while(found == false)	{
+		if(value == pos->data)	{
+			found = true;
+			locator = pos;
+		}
+		if(value > pos->data)	{
+			if(pos->right == NULL)	{
+				return false;
+			}
+			pos = pos->right;
+		}
+		if(value < pos->data)	{
+			if(pos->left == NULL)	{
+				return false;
+			}
+			pos = pos->left;
+		}
+	}
+	return found;
+}
+
+bool RBTree::remove(int value)	{
+	bool found = search(value);
+	if(found == false)	{
+		return false;
+	}
+	if(found ==true)	{
+		Node* temp = locator;
+		successor(locator);
+		deletion(temp, locator);
+	}
+}
+
+void RBTree::successor(Node* value)	{
+	//If statment incase there is no child
+	if((value->left == NULL && value->right == NULL))	{
+		locator = NULL;
+	}
+	bool sNode = false;
+	if(value->right != NULL)	{
+		value = value->right;
+		while(value->left != NULL)	{
+			value = value->left;
+		}
+		locator = value;
+		sNode = true;
+	}
+	while(sNode == false)	{
+		value = value->left;
+		while(value->right != NULL)	{
+			value = value->right;
+		}
+		locator = value;
+	}
+}
+
+void RBTree::deletion(Node* value, Node* locator)	{
+	child = locator;
+	if(child != NULL)	{
+		replaceNode(value, child);
+		if(value->isBlack == 1)	{
+			if(child->isBlack == 0)	{
+				child->isBlack = 1;
+			}else	{
+				deleteCase1(child);
+			}
+		}
+	}
+	delete(value);
+}
+
+void RBTree::repalceNode(Node* value, Node* child)	{
+	if(child != NULL)	{
+		if(value->parent == NULL)	{
+			child->parent = NULL;
+			root = child;
+		}
+		if(value == value->parent->left)	{
+			value->parent->left = child;
+		}
+		if(value == value->parent->right)	{
+			value->parent->right = child;
+		}
+		if((value->left != null)&&(value->left != child))	{
+			value->left->parent = child;
+			child->left = value->left;
+		}
+		if((value->right != null)&&(value->right != child))	{
+			value->right->parent = child;
+			child->right = value->right;
+		}
+	}
+}
+
+void RBTree::deleteCase1(Node* value)	{
+	if(value->parent !=NULL)
+		deleteCase2(value);
+}
+
+void RBTree::deletCase2(Node* value)	{
+	
+	siblingFinder(value);
+	if((sibling != NULL)||(sibling->isBlack == 0)	{
+		value->parent->isBlack = 0;
+		sibling->isBLack = 1;
+		if(value == value->parent->left)	{
+			leftR(value->parent);
+		}else	{
+			rightR(value->parent);
+		}
+	}
+	deleteCase3(value);
+}
+
+void deleteCase3(Node* value)	{
+	siblingFinder(value);
+	if((value->parent->isBlack ==1)&&(sibling == NULL))	{
+		deleteCase1(value->parent);
+	}
+	if((value->parent->isBlack ==1)&&(sibling->isBlack ==1)&&(sibling->left->isBlack ==1)&&(sibling->right->isBlack ==1))	{
+		sibling->isBlack = 0;
+		deleteCase1(value->parent);
+	}
+	deleteCase4(value);
+}
+
+void deleteCase4(Node* value)	{
+	siblingFinder(value);
+
+}
+
+
+void RBTree::siblingFinder(Node* value)	{
+	std::cout << "Sibling Finder for value: " << value->data << std::endl;
+
+	if(value == value->parent->left)	{
+		sibling = value->parent->right;
+	}else	{
+		sibling = value->parent->left;
+	}
+
+}
+
 void RBTree::grandpaFinder(Node* value)	{
 	std::cout << "Grandpa finder for value: " << value->data << std::endl;
 	if((value != NULL) && (value->parent != NULL))	{
@@ -88,17 +237,7 @@ void RBTree::uncleFinder(Node* value)	{
 
 
 void RBTree::fixTree(Node* value)	{
-
 	insertCase1(value);
-
-	/*int x = value->data;
-	bool y = value->isBlack;
-	std::cout << "value: " << x << std::endl << "value colour is now: " << y << std::endl;
-	Node* temp = value;
-	
-	int x = temp->data;
-	std::cout << "Entered Fixtree node value is: " << x << std::endl;
-	*/
 }
 /*
 void RBTree::rightR(Node* value)	{

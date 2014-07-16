@@ -19,6 +19,10 @@ public:
 */
 	bool insert(int value);
 
+	bool search(int value);
+
+	bool remove(int value);
+
 	//int dump(int n);
 
 	int size()	const;
@@ -40,6 +44,8 @@ private:
 
 	void fixTree(Node* value);
 
+	void siblingFinder(Node* value);
+
 	void grandpaFinder(Node* value);
 
 	void uncleFinder(Node* value);
@@ -58,6 +64,24 @@ private:
 
 	void leftR(Node* value);
 
+	void successor(Node* value);
+
+	void deletion(Node* value, Node* child);
+
+	void replaceNode(Node* value, Node* child);
+
+	void deleteCase1(Node* value);
+
+	void deleteCase2(Node* value);
+
+	void deleteCase3(Node* value);
+
+	void deleteCase4(Node* value);
+
+	void deleteCase5(Node* value);
+
+	void deleteCase6(Node* value);
+
 	void quickprint(Node* value)	const;
 
 	//int inorder(Node* value, int arr[], int n);
@@ -65,6 +89,9 @@ private:
 	Node* root;
 	Node* grandpa;
 	Node* uncle;
+	Node* sibling;
+	Node* locator;
+	Node* child;
 
 	int counter;
 
